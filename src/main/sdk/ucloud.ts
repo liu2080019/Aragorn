@@ -76,10 +76,10 @@ export class UCloud implements ISdk {
   docUrl = 'https://docs.ucloud.cn/ufile/README';
   nowConfigurationList = [] as SdkConfigurationList;
 
-  public async upload(files: string[]) {
-    const fileExtName = path.extname(files[0]);
+  public async upload(files: string) {
+    const fileExtName = path.extname(files);
     const fileName = uuidv4() + fileExtName;
-    const file = createReadStream(files[0]);
+    const file = createReadStream(files);
     const { domain } = this.getConfig();
     try {
       const res = await this.postFile(fileName, file);

@@ -50,16 +50,19 @@ export class Upload {
     try {
       const sdk = sdks.find(item => item.sdkName === uploader.sdkName) as ISdk;
       sdk.nowConfigurationList = uploader.configurationList;
-      const res = await sdk.upload(this.files);
-      if (res.success) {
-        this.handleUploadSuccess(res.data as UploadResponseData, uploader);
-      } else {
-        const notification = new Notification({
-          title: 'SDK方式上传失败',
-          body: res.desc || '错误信息未捕获'
-        });
-        notification.show();
-      }
+      // support multipart upload
+      this.files.forEach(async item => {
+        const res = await sdk.upload(item);
+        if (res.success) {
+          this.handleUploadSuccess(item, res.data as UploadResponseData, uploader);
+        } else {
+          const notification = new Notification({
+            title: 'SDK方式上传失败',
+            body: res.desc || '错误信息未捕获'
+          });
+          notification.show();
+        }
+      })
     } catch (err) {
       console.log(err);
     }
@@ -92,7 +95,7 @@ export class Upload {
               name: uuidv4(),
               url: imageUrl
             };
-            this.handleUploadSuccess(fileInfo, uploader);
+            this.handleUploadSuccess(file, fileInfo, uploader);
           } else {
             console.log('请求失败');
             console.dir(requestOpetion);
@@ -109,9 +112,8 @@ export class Upload {
     });
   }
 
-  protected handleUploadSuccess(fileInfo: UploadResponseData, uploader: UserSdk | IApi) {
+  protected handleUploadSuccess(filePath: string, fileInfo: UploadResponseData, uploader: UserSdk | IApi) {
     console.log('上传成功');
-    const filePath = this.files[0];
     const uploadedFileInfo: UploadedFileInfo = {
       ...fileInfo,
       type: mime.lookup(filePath) || '-',

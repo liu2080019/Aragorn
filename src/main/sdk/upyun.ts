@@ -56,10 +56,10 @@ export class Upyun implements ISdk {
   docUrl = 'https://github.com/upyun/node-sdk';
   client: any;
 
-  public async upload(files: string[]): Promise<UploadResponse> {
-    const fileExtName = path.extname(files[0]);
-    const fileName = uuidv4() + fileExtName;
-    const file = createReadStream(files[0]);
+  public async upload(files: string): Promise<UploadResponse> {
+    const fileExtName = path.extname(files);
+    const fileName = path.basename(files).split('.')[0] + fileExtName;
+    const file = createReadStream(files);
     const { domain, directory } = this.getConfig();
     try {
       const res = await this.ypyunUpload(fileName, file);

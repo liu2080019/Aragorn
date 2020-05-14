@@ -70,10 +70,10 @@ export class Qiniu implements ISdk {
   docUrl = 'https://developer.qiniu.com/kodo/sdk/1289/nodejs';
   nowConfigurationList = [] as SdkConfigurationList;
 
-  public async upload(files: string[]): Promise<UploadResponse> {
-    const fileExtName = path.extname(files[0]);
+  public async upload(files: string): Promise<UploadResponse> {
+    const fileExtName = path.extname(files);
     const fileName = uuidv4() + fileExtName;
-    const file = createReadStream(files[0]);
+    const file = createReadStream(files);
     try {
       const { key }: any = await this.qiniuUpload(fileName, file);
       const url = this.qiniuDownload(key);

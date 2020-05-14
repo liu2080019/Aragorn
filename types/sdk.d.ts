@@ -13,7 +13,7 @@ export interface ISdk {
   /** 上传时的配置项 */
   nowConfigurationList: SdkConfigurationList;
   /** 上传方法 */
-  upload: (files: string[]) => Promise<UploadResponse>;
+  upload: (files: string) => Promise<UploadResponse>;
 }
 
 /**
